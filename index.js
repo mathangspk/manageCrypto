@@ -155,6 +155,6 @@ async function updatePrice(symbol) {
     }
 
 }
-symbol = ['BTC', 'ETH', 'BNB', 'NEAR', 'CSPR', 'RACA', 'SHIB', 'C98']
+symbol = ['BTC', 'ETH', 'BNB', 'NEAR', 'CSPR', 'RACA', 'SHIB', 'C98', 'SOL', 'MATIC', 'DOT', 'AVAX', 'APE', 'ADA']
 
 symbol.map(updatePrice);
