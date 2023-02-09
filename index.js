@@ -34,6 +34,20 @@ async function getMarketCapDominance(symbol) {
     }
 
 }
+async function getMarketCapDollar(symbol) {
+    try {
+        const data = await client.getQuotes({ symbol: symbol })
+        // console.log(data.data.symbol.quote.USD.price)
+        //const name = data.data[Object.keys(data.data)[0]].name
+        //const price = data.data[Object.keys(data.data)[0]].quote.USD.price
+        const market_cap = data.data[Object.keys(data.data)[0]].quote.USD.market_cap
+        return market_cap
+        //console.log(market_cap_dominance)
+    } catch (e) {
+        console.log(e)
+    }
+
+}
 //getPrice('BTC').then(console.log).catch(console.error)
 
 //getPrice('BTC')
@@ -113,6 +127,32 @@ async function updatePercentDominanceGoogleSheet(symbol, value, row) {
         }
     })
 };
+async function updateMarketCapGoogleSheet(symbol, value, row) {
+    const auth = new google.auth.GoogleAuth({
+        keyFile,
+        scopes: "https://www.googleapis.com/auth/spreadsheets",
+    })
+
+    //create client instance for auth
+
+    const client = await auth.getClient();
+    //instance of google sheets API
+
+    const googleSheets = google.sheets({ version: "v4", auth: client });
+
+    const spreadsheetId = '1W8tJBVXTPKBxpthhiLCvQwi8DNgFIq3kHj7BWJfDQ-Y';
+    //get metadata about spreadsheet 
+    let range = String(`${symbol}!E` + row);
+    await googleSheets.spreadsheets.values.update({
+        auth,
+        spreadsheetId,
+        range,
+        valueInputOption: "USER_ENTERED",
+        resource: {
+            values: [[value]]
+        }
+    })
+};
 
 async function updateTimeGoogleSheet(row) {
     const auth = new google.auth.GoogleAuth({
@@ -145,10 +185,13 @@ async function updatePrice(symbol) {
     try {
         const priceBTC = await getPrice(symbol)
         const percentDominance = await getMarketCapDominance(symbol)
+        const marketCap = await getMarketCapDollar(symbol)
+        console.log(marketCap)
         console.log(priceBTC)
         console.log(percentDominance)
         await updatePriceGoogleSheet(symbol, priceBTC, 3);
         await updatePercentDominanceGoogleSheet(symbol, percentDominance, 1);
+        await updateMarketCapGoogleSheet(symbol, marketCap, 1);
 
     } catch (e) {
         console.log(e)
