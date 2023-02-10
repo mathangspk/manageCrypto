@@ -40,9 +40,9 @@ async function getMarketCapDollar(symbol) {
         // console.log(data.data.symbol.quote.USD.price)
         //const name = data.data[Object.keys(data.data)[0]].name
         //const price = data.data[Object.keys(data.data)[0]].quote.USD.price
-        const market_cap = data.data[Object.keys(data.data)[0]].quote.USD.market_cap
-        return market_cap
-        //console.log(market_cap_dominance)
+        var market_cap = data.data[Object.keys(data.data)[0]].quote.USD
+        //return market_cap
+        console.log(market_cap)
     } catch (e) {
         console.log(e)
     }
@@ -185,13 +185,13 @@ async function updatePrice(symbol) {
     try {
         const priceBTC = await getPrice(symbol)
         const percentDominance = await getMarketCapDominance(symbol)
-        const marketCap = await getMarketCapDollar(symbol)
-        console.log(marketCap)
-        console.log(priceBTC)
-        console.log(percentDominance)
+        //var marketCap = await getMarketCapDollar(symbol)
+        //console.log(symbol + " marketCap: " + marketCap)
+        console.log(symbol + " Price: " + priceBTC)
+        console.log(symbol + " percent: " + percentDominance)
         await updatePriceGoogleSheet(symbol, priceBTC, 3);
         await updatePercentDominanceGoogleSheet(symbol, percentDominance, 1);
-        await updateMarketCapGoogleSheet(symbol, marketCap, 1);
+        //await updateMarketCapGoogleSheet(symbol, marketCap, 1);
 
     } catch (e) {
         console.log(e)
